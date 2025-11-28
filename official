@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kiwisimmo App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg-dark: #050816;
+      --bg-card: rgba(15, 23, 42, 0.9);
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.2);
+      --accent-strong: #4ade80;
+      --danger: #f97373;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-soft: rgba(148, 163, 184, 0.2);
+      --radius-xl: 20px;
+      --shadow-soft: 0 20px 45px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.25), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(244, 63, 94, 0.22), transparent 60%),
+        radial-gradient(circle at 50% 100%, rgba(34, 197, 94, 0.25), transparent 55%),
+        linear-gradient(145deg, #020617, #020617 40%, #030712);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1100px;
+      background: radial-gradient(circle at 10% 20%, rgba(148, 163, 184, 0.18), transparent 55%),
+                  radial-gradient(circle at 90% 80%, rgba(94, 234, 212, 0.18), transparent 60%),
+                  rgba(15, 23, 42, 0.9);
+      border-radius: 28px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(22px);
+    }
+
+    header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 30% 20%, #facc15, transparent 60%),
+        radial-gradient(circle at 70% 80%, #22c55e, transparent 60%),
+        radial-gradient(circle at 50% 50%, #22c55e, transparent 50%);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(249, 250, 251, 0.18);
+      box-shadow: 0 10px 20px rgba(22, 163, 74, 0.4);
+    }
+
+    .brand-logo::after {
+      content: "";
+      position: absolute;
+      inset: 16% 18%;
+      border-radius: 40% 60% 55% 45%;
+      background: radial-gradient(circle at 30% 30%, #f9fafb, transparent 65%);
+      opacity: 0.75;
+      mix-blend-mode: screen;
+    }
+
+    .brand-text-title {
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-text-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .tag-pill {
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      background: radial-gradient(circle at 0 0, rgba(34, 197, 94, 0.5), transparent 70%);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #bbf7d0;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tag-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.5fr);
+      gap: 18px;
+      padding: 18px;
+    }
+
+    @media (max-width: 800px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    .card {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-soft);
+      padding: 16px 18px;
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.85);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.14), transparent 55%),
+        radial-gradient(circle at 90% 100%, rgba(34, 197, 94, 0.12), transparent 55%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    h2, h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h2 span.icon,
+    h3 span.icon {
+      font-size: 1.2rem;
+    }
+
+    p.caption {
+      margin: 0 0 14px 0;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+      color: var(--text-muted);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at 0 0, rgba(30, 64, 175, 0.3), transparent 75%),
+                  rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      font-size: 0.86rem;
+      outline: none;
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.9);
+    }
+
+    textarea {
+      border-radius: 14px;
+      min-height: 70px;
+      resize: vertical;
+      padding: 8px 10px;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: rgba(148, 163, 184, 0.7);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.5);
+    }
+
+    .field {
+      margin-bottom: 10px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: radial-gradient(circle at 0 0, rgba(190, 242, 100, 0.5), transparent 65%),
+                  linear-gradient(135deg, #22c55e, #16a34a);
+      color: black;
+      box-shadow: 0 10px 22px rgba(22, 163, 74, 0.6);
+      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+    }
+
+    button.secondary {
+      background: radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.5), transparent 65%),
+                  linear-gradient(135deg, #0f172a, #111827);
+      color: var(--text-main);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    button.danger {
+      background: linear-gradient(135deg, #f97373, #ef4444);
+      color: #fee2e2;
+      box-shadow: 0 10px 22px rgba(248, 113, 113, 0.6);
+    }
+
+    button:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.9);
+      filter: brightness(0.98);
+    }
+
+    .role-toggle {
+      display: flex;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      margin-bottom: 10px;
+    }
+
+    .role-chip {
+      flex: 1;
+      text-align: center;
+      font-size: 0.8rem;
+      padding: 6px 4px;
+      border-radius: 999px;
+      cursor: pointer;
+      user-select: none;
+      color: var(--text-muted);
+    }
+
+    .role-chip.active {
+      background: radial-gradient(circle at 0 0, rgba(34, 197, 94, 0.7), transparent 70%);
+      color: #052e16;
+      font-weight: 600;
+      box-shadow: 0 8px 18px rgba(22, 163, 74, 0.7);
+    }
+
+    .subtle-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .error-msg, .success-msg {
+      font-size: 0.76rem;
+      border-radius: 999px;
+      padding: 6px 10px;
+      margin-bottom: 8px;
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .error-msg {
+      background: rgba(248, 113, 113, 0.12);
+      color: #fecaca;
+      border: 1px solid rgba(248, 113, 113, 0.4);
+    }
+
+    .success-msg {
+      background: rgba(34, 197, 94, 0.16);
+      color: #bbf7d0;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .pill.green {
+      border-color: rgba(34, 197, 94, 0.7);
+      color: #bbf7d0;
+    }
+
+    .pill.red {
+      border-color: rgba(248, 113, 113, 0.7);
+      color: #fecaca;
+    }
+
+    .section-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .scroll-area {
+      max-height: 230px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .scroll-area::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .scroll-area::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .scroll-area::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.9);
+      border-radius: 999px;
+    }
+
+    .notice-card {
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.22), transparent 70%),
+                  rgba(15, 23, 42, 0.9);
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+    }
+
+    .notice-title {
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .notice-meta {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .flex-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .flex-2 {
+      flex: 2;
+      min-width: 130px;
+    }
+
+    .flex-1 {
+      flex: 1;
+      min-width: 110px;
+    }
+
+    .market-card {
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: radial-gradient(circle at 100% 0, rgba(34, 197, 94, 0.25), transparent 75%),
+                  rgba(15, 23, 42, 0.95);
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .market-top-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .market-title {
+      font-weight: 600;
+    }
+
+    .market-owner {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .market-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .status-sold {
+      opacity: 0.6;
+    }
+
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+
+    .users-table th, .users-table td {
+      padding: 5px 6px;
+      border-bottom: 1px solid rgba(30, 64, 175, 0.5);
+    }
+
+    .users-table th {
+      text-align: left;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .users-table td {
+      color: var(--text-main);
+    }
+
+    .chip-role {
+      font-size: 0.72rem;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.7);
+      color: #e0f2fe;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .status-dot.green {
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .status-dot.red {
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+    }
+
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+    }
+
+    .avatar-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #f9fafb, transparent 60%),
+                  linear-gradient(145deg, #22c55e, #16a34a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: #022c22;
+      box-shadow: 0 8px 16px rgba(34, 197, 94, 0.6);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .helper-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .helper-row span.highlight {
+      color: #bbf7d0;
+      font-weight: 500;
+    }
+
+    .points-badge {
+      font-size: 0.8rem;
+      border-radius: 999px;
+      padding: 4px 9px;
+      border: 1px solid rgba(74, 222, 128, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: radial-gradient(circle at 0 0, rgba(74, 222, 128, 0.4), transparent 60%);
+      color: #bbf7d0;
+    }
+
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo"></div>
+      <div>
+        <div class="brand-text-title">
+          KIWISIMMO
+          <span class="pill green">Points Marketplace</span>
+        </div>
+        <div class="brand-text-sub">Civilians × Management × Notices</div>
+      </div>
+    </div>
+    <div class="topbar-user" id="topbarUser" style="display:none;">
+      <div class="avatar-circle" id="topbarAvatar">K</div>
+      <div>
+        <div id="topbarName">User</div>
+        <div style="font-size:0.7rem;color:var(--text-muted);" id="topbarRole">Role</div>
+      </div>
+      <button class="secondary" id="logoutBtn">Logout</button>
+    </div>
+    <div id="topbarLoggedOut">
+      <span class="tag-pill">
+        <span class="tag-dot"></span>
+        Live Session
+      </span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- AUTH / LOGIN CARD -->
+    <section class="card">
+      <div class="card-inner">
+
+        <h2><span class="icon">🔐</span> Access Portal</h2>
+        <p class="caption">
+          Log in as <strong>Management</strong> or create a <strong>Civilian</strong> account.
+          Management uses pre-set credentials; civilians sign up with their own.
+        </p>
+
+        <div class="role-toggle">
+          <div class="role-chip active" data-role="civilian">Civilian</div>
+          <div class="role-chip" data-role="management">Management</div>
+        </div>
+
+        <div class="subtle-chip">
+          <span>Management credentials:</span>
+          <code>Goat_201455 / 676767</code>
+        </div>
+
+        <div id="authError" class="error-msg">
+          <span>⚠️</span><span id="authErrorText"></span>
+        </div>
+        <div id="authSuccess" class="success-msg">
+          <span>✅</span><span id="authSuccessText"></span>
+        </div>
+
+        <!-- CIVILIAN AUTH AREA -->
+        <div id="civilianAuthArea">
+          <div class="helper-row">
+            <span><span class="highlight">Civilians</span> can create accounts & log in.</span>
+          </div>
+
+          <div class="field">
+            <label for="civUsername">Username</label>
+            <input id="civUsername" type="text" placeholder="Choose a username" />
+          </div>
+
+          <div class="field">
+            <label for="civPassword">Password</label>
+            <input id="civPassword" type="password" placeholder="Create a strong password" />
+          </div>
+
+          <div class="btn-row">
+            <button id="btnCivLogin">
+              <span>Log in</span>
+            </button>
+            <button class="secondary" id="btnCivSignup">
+              <span>Sign up</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- MANAGEMENT AUTH AREA -->
+        <div id="managementAuthArea" class="hidden">
+          <div class="helper-row">
+            <span><span class="highlight">Management only</span> — restricted controls.</span>
+          </div>
+
+          <div class="field">
+            <label for="mgmtUsername">Management Username</label>
+            <input id="mgmtUsername" type="text" placeholder="Enter management username" />
+          </div>
+
+          <div class="field">
+            <label for="mgmtPassword">Management Password</label>
+            <input id="mgmtPassword" type="password" placeholder="Enter management password" />
+          </div>
+
+          <div class="btn-row">
+            <button id="btnMgmtLogin">
+              <span>Log in as Management</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DASHBOARD CARD -->
+    <section class="card">
+      <div class="card-inner">
+
+        <!-- CIVILIAN DASHBOARD -->
+        <div id="civilianDashboard" class="hidden">
+          <h2><span class="icon">🧑‍🎤</span> Civilian Workspace</h2>
+          <p class="caption">
+            Here you can auction items using <strong>points</strong>, explore the <strong>market</strong>,
+            and read <strong>notices</strong> from management.
+          </p>
+
+          <div class="helper-row">
+            <div id="civPointsBadge" class="points-badge">
+              <span>💎</span>
+              <span><span id="civPointsValue">0</span> Points</span>
+            </div>
+          </div>
+
+          <h3><span class="icon">📢</span> Notices (read-only)</h3>
+          <div class="scroll-area" id="noticesListCivilian"></div>
+
+          <h3 style="margin-top:12px;"><span class="icon">🏪</span> Market & Auctions</h3>
+
+          <div class="flex-row">
+            <div class="flex-2">
+              <p class="caption" style="margin-bottom:6px;">Create an auction using points.</p>
+              <div class="field">
+                <label for="itemTitle">Item title</label>
+                <input id="itemTitle" type="text" placeholder="Ex: Rare digital kiwi badge" />
+              </div>
+              <div class="field">
+                <label for="itemDesc">Description</label>
+                <textarea id="itemDesc" placeholder="Describe your item..."></textarea>
+              </div>
+              <div class="field">
+                <label for="itemPrice">Price (points)</label>
+                <input id="itemPrice" type="number" min="1" placeholder="Ex: 50" />
+              </div>
+              <div class="btn-row">
+                <button id="btnCreateItem">
+                  <span>List item</span>
+                </button>
+              </div>
+              <div id="civMarketMsg" class="error-msg" style="margin-top:8px;">
+                <span>⚠️</span><span id="civMarketMsgText"></span>
+              </div>
+            </div>
+            <div class="flex-1">
+              <p class="caption" style="margin-bottom:6px;">Browse items & buy using points.</p>
+              <div class="scroll-area" id="marketListCivilian"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MANAGEMENT DASHBOARD -->
+        <div id="managementDashboard" class="hidden">
+          <h2><span class="icon">🧠</span> Management Control Room</h2>
+          <p class="caption">
+            Author notices, oversee civilians, and manage bans/suspensions.
+          </p>
+
+          <h3><span class="icon">📢</span> Publish Notice</h3>
+          <div class="field">
+            <label for="noticeTitle">Notice title</label>
+            <input id="noticeTitle" type="text" placeholder="Ex: System maintenance, new rules, etc." />
+          </div>
+          <div class="field">
+            <label for="noticeBody">Message</label>
+            <textarea id="noticeBody" placeholder="Write a clear notice for all civilians..."></textarea>
+          </div>
+          <div class="btn-row">
+            <button id="btnPublishNotice">
+              <span>Publish notice</span>
+            </button>
+          </div>
+          <div id="noticeMsg" class="success-msg" style="margin-top:8px;">
+            <span>✅</span><span id="noticeMsgText"></span>
+          </div>
+
+          <h3 style="margin-top:14px;"><span class="icon">👥</span> Civilian Registry</h3>
+          <p class="caption">
+            Only management can ban/suspend civilians. Banned users cannot log in or trade.
+          </p>
+          <div class="scroll-area">
+            <table class="users-table" id="usersTable">
+              <thead>
+              <tr>
+                <th>User</th>
+                <th>Status</th>
+                <th>Points</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <h3 style="margin-top:10px;"><span class="icon">📜</span> Recent Notices Preview</h3>
+          <div class="scroll-area" id="noticesListManagement"></div>
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div id="dashboardEmptyState">
+          <h2><span class="icon">🪐</span> Welcome to Kiwisimmo</h2>
+          <p class="caption">
+            Log in or sign up on the left to access either the <strong>Civilian workspace</strong> or the
+            <strong>Management control room</strong>.
+          </p>
+          <p class="caption">
+            Civilians: auction items for points, read notices.<br />
+            Management: post notices, manage civilians, ban/suspend accounts.
+          </p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  // ---------- SIMPLE "DATABASE" USING LOCALSTORAGE ----------
+
+  const DB_KEYS = {
+    USERS: "kiwisimmo_users",
+    ITEMS: "kiwisimmo_items",
+    NOTICES: "kiwisimmo_notices",
+  };
+
+  function loadArray(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return [];
+      return JSON.parse(raw);
+    } catch (e) {
+      console.error("Failed to parse", key, e);
+      return [];
+    }
+  }
+
+  function saveArray(key, arr) {
+    localStorage.setItem(key, JSON.stringify(arr));
+  }
+
+  function findUser(username) {
+    const users = loadArray(DB_KEYS.USERS);
+    return users.find(u => u.username.toLowerCase() === username.toLowerCase());
+  }
+
+  function updateUser(user) {
+    const users = loadArray(DB_KEYS.USERS);
+    const idx = users.findIndex(u => u.username.toLowerCase() === user.username.toLowerCase());
+    if (idx >= 0) {
+      users[idx] = user;
+      saveArray(DB_KEYS.USERS, users);
+    }
+  }
+
+  // ---------- DOM ELEMENTS ----------
+
+  const roleChips = document.querySelectorAll(".role-chip");
+  const civilianAuthArea = document.getElementById("civilianAuthArea");
+  const managementAuthArea = document.getElementById("managementAuthArea");
+
+  const authError = document.getElementById("authError");
+  const authErrorText = document.getElementById("authErrorText");
+  const authSuccess = document.getElementById("authSuccess");
+  const authSuccessText = document.getElementById("authSuccessText");
+
+  const civUsernameInput = document.getElementById("civUsername");
+  const civPasswordInput = document.getElementById("civPassword");
+  const btnCivLogin = document.getElementById("btnCivLogin");
+  const btnCivSignup = document.getElementById("btnCivSignup");
+
+  const mgmtUsernameInput = document.getElementById("mgmtUsername");
+  const mgmtPasswordInput = document.getElementById("mgmtPassword");
+  const btnMgmtLogin = document.getElementById("btnMgmtLogin");
+
+  const civilianDashboard = document.getElementById("civilianDashboard");
+  const managementDashboard = document.getElementById("managementDashboard");
+  const dashboardEmptyState = document.getElementById("dashboardEmptyState");
+
+  const topbarUser = document.getElementById("topbarUser");
+  const topbarLoggedOut = document.getElementById("topbarLoggedOut");
+  const topbarName = document.getElementById("topbarName");
+  const topbarRole = document.getElementById("topbarRole");
+  const topbarAvatar = document.getElementById("topbarAvatar");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  const noticesListCivilian = document.getElementById("noticesListCivilian");
+  const noticesListManagement = document.getElementById("noticesListManagement");
+
+  const noticeTitleInput = document.getElementById("noticeTitle");
+  const noticeBodyInput = document.getElementById("noticeBody");
+  const btnPublishNotice = document.getElementById("btnPublishNotice");
+  const noticeMsg = document.getElementById("noticeMsg");
+  const noticeMsgText = document.getElementById("noticeMsgText");
+
+  const usersTableBody = document.querySelector("#usersTable tbody");
+
+  const civPointsBadge = document.getElementById("civPointsBadge");
+  const civPointsValue = document.getElementById("civPointsValue");
+
+  const itemTitleInput = document.getElementById("itemTitle");
+  const itemDescInput = document.getElementById("itemDesc");
+  const itemPriceInput = document.getElementById("itemPrice");
+  const btnCreateItem = document.getElementById("btnCreateItem");
+  const marketListCivilian = document.getElementById("marketListCivilian");
+  const civMarketMsg = document.getElementById("civMarketMsg");
+  const civMarketMsgText = document.getElementById("civMarketMsgText");
+
+  let currentSession = {
+    role: null,   // "civilian" or "management"
+    username: null
+  };
+
+  // ---------- UI HELPERS ----------
+
+  function showError(msg) {
+    authErrorText.textContent = msg;
+    authError.style.display = "flex";
+    authSuccess.style.display = "none";
+  }
+
+  function showSuccess(msg) {
+    authSuccessText.textContent = msg;
+    authSuccess.style.display = "flex";
+    authError.style.display = "none";
+  }
+
+  function clearAuthMessages() {
+    authError.style.display = "none";
+    authSuccess.style.display = "none";
+  }
+
+  function setDashboard(role, username) {
+    currentSession.role = role;
+    currentSession.username = username;
+
+    // Top bar
+    if (role && username) {
+      topbarUser.style.display = "flex";
+      topbarLoggedOut.style.display = "none";
+      topbarName.textContent = username;
+      topbarRole.textContent =
+        role === "management" ? "Management" : "Civilian";
+      topbarAvatar.textContent = username.charAt(0).toUpperCase();
+    } else {
+      topbarUser.style.display = "none";
+      topbarLoggedOut.style.display = "block";
+    }
+
+    // Dashboards
+    civilianDashboard.classList.add("hidden");
+    managementDashboard.classList.add("hidden");
+    dashboardEmptyState.classList.remove("hidden");
+
+    if (role === "civilian") {
+      dashboardEmptyState.classList.add("hidden");
+      civilianDashboard.classList.remove("hidden");
+      loadCivPoints();
+      renderMarketList();
+    } else if (role === "management") {
+      dashboardEmptyState.classList.add("hidden");
+      managementDashboard.classList.remove("hidden");
+      renderUsersTable();
+    }
+
+    renderNotices();
+  }
+
+  function loadCivPoints() {
+    if (!currentSession.username) return;
+    const user = findUser(currentSession.username);
+    if (user) {
+      civPointsValue.textContent = user.points ?? 100;
+    }
+  }
+
+  // ---------- ROLE TOGGLE ----------
+
+  roleChips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      roleChips.forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+      const role = chip.dataset.role;
+      clearAuthMessages();
+      if (role === "civilian") {
+        civilianAuthArea.classList.remove("hidden");
+        managementAuthArea.classList.add("hidden");
+      } else {
+        civilianAuthArea.classList.add("hidden");
+        managementAuthArea.classList.remove("hidden");
+      }
+    });
+  });
+
+  // ---------- AUTH: CIVILIAN ----------
+
+  btnCivSignup.addEventListener("click", () => {
+    clearAuthMessages();
+    const username = civUsernameInput.value.trim();
+    const password = civPasswordInput.value.trim();
+
+    if (!username || !password) {
+      showError("Please enter both a username and password.");
+      return;
+    }
+
+    if (findUser(username)) {
+      showError("That username is already taken. Choose another.");
+      return;
+    }
+
+    const users = loadArray(DB_KEYS.USERS);
+    users.push({
+      username,
+      password,
+      role: "civilian",
+      points: 100, // default starting points
+      banned: false
+    });
+    saveArray(DB_KEYS.USERS, users);
+
+    showSuccess("Account created. You can now log in as a civilian.");
+  });
+
+  btnCivLogin.addEventListener("click", () => {
+    clearAuthMessages();
+    const username = civUsernameInput.value.trim();
+    const password = civPasswordInput.value.trim();
+
+    if (!username || !password) {
+      showError("Please enter your username and password to log in.");
+      return;
+    }
+
+    const user = findUser(username);
+    if (!user || user.role !== "civilian" || user.password !== password) {
+      showError("Invalid civilian credentials.");
+      return;
+    }
+
+    if (user.banned) {
+      showError("This account is banned/suspended by management.");
+      return;
+    }
+
+    showSuccess("Logged in as Civilian.");
+    setDashboard("civilian", user.username);
+  });
+
+  // ---------- AUTH: MANAGEMENT ----------
+
+  const MGMT_USERNAME = "Goat_201455";
+  const MGMT_PASSWORD = "676767";
+
+  btnMgmtLogin.addEventListener("click", () => {
+    clearAuthMessages();
+    const username = mgmtUsernameInput.value.trim();
+    const password = mgmtPasswordInput.value.trim();
+
+    if (!username || !password) {
+      showError("Enter both management username and password.");
+      return;
+    }
+
+    if (username === MGMT_USERNAME && password === MGMT_PASSWORD) {
+      showSuccess("Logged in as Management.");
+      setDashboard("management", username);
+    } else {
+      showError("Invalid management credentials.");
+    }
+  });
+
+  // ---------- LOGOUT ----------
+
+  logoutBtn.addEventListener("click", () => {
+    currentSession.role = null;
+    currentSession.username = null;
+    setDashboard(null, null);
+    clearAuthMessages();
+  });
+
+  // ---------- NOTICES ----------
+
+  function renderNotices() {
+    const notices = loadArray(DB_KEYS.NOTICES).sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    function createNoticeHTML(n) {
+      const date = new Date(n.createdAt);
+      const formatted = date.toLocaleString();
+      return `
+        <div class="notice-card">
+          <div class="notice-title">${n.title || "(Untitled notice)"}</div>
+          <div>${n.body || ""}</div>
+          <div class="notice-meta">
+            <span>From: Management</span> •
+            <span>${formatted}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    noticesListCivilian.innerHTML = notices.length
+      ? notices.map(createNoticeHTML).join("")
+      : `<p class="caption">No notices yet. Management will post updates here.</p>`;
+
+    noticesListManagement.innerHTML = notices.length
+      ? notices.map(createNoticeHTML).join("")
+      : `<p class="caption">No notices yet. Publish one above.</p>`;
+  }
+
+  btnPublishNotice.addEventListener("click", () => {
+    if (currentSession.role !== "management") return;
+
+    const title = noticeTitleInput.value.trim();
+    const body = noticeBodyInput.value.trim();
+
+    if (!title || !body) {
+      noticeMsg.classList.remove("success-msg");
+      noticeMsg.classList.add("error-msg");
+      noticeMsg.style.display = "flex";
+      noticeMsgText.textContent = "Please provide both a title and message.";
+      return;
+    }
+
+    const notices = loadArray(DB_KEYS.NOTICES);
+    notices.push({
+      id: Date.now(),
+      title,
+      body,
+      createdAt: new Date().toISOString()
+    });
+    saveArray(DB_KEYS.NOTICES, notices);
+
+    noticeTitleInput.value = "";
+    noticeBodyInput.value = "";
+
+    noticeMsg.classList.remove("error-msg");
+    noticeMsg.classList.add("success-msg");
+    noticeMsg.style.display = "flex";
+    noticeMsgText.textContent = "Notice published for all civilians.";
+    renderNotices();
+  });
+
+  // ---------- USERS TABLE (MANAGEMENT) ----------
+
+  function renderUsersTable() {
+    const users = loadArray(DB_KEYS.USERS).filter(u => u.role === "civilian");
+    if (!users.length) {
+      usersTableBody.innerHTML = `
+        <tr>
+          <td colspan="4" style="color:var(--text-muted);padding-top:6px;">
+            No civilians have signed up yet.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    usersTableBody.innerHTML = "";
+    users.forEach(user => {
+      const tr = document.createElement("tr");
+
+      const tdUser = document.createElement("td");
+      tdUser.textContent = user.username;
+
+      const tdStatus = document.createElement("td");
+      const dot = document.createElement("span");
+      dot.className = "status-dot " + (user.banned ? "red" : "green");
+      const text = document.createElement("span");
+      text.textContent = user.banned ? "Banned" : "Active";
+      tdStatus.appendChild(dot);
+      tdStatus.appendChild(text);
+
+      const tdPoints = document.createElement("td");
+      tdPoints.textContent = user.points ?? 100;
+
+      const tdAction = document.createElement("td");
+      const btn = document.createElement("button");
+      btn.className = "secondary " + (user.banned ? "" : "danger");
+      btn.style.fontSize = "0.72rem";
+      btn.textContent = user.banned ? "Unban" : "Ban";
+      btn.addEventListener("click", () => {
+        user.banned = !user.banned;
+        updateUser(user);
+        renderUsersTable();
+      });
+      tdAction.appendChild(btn);
+
+      tr.appendChild(tdUser);
+      tr.appendChild(tdStatus);
+      tr.appendChild(tdPoints);
+      tr.appendChild(tdAction);
+
+      usersTableBody.appendChild(tr);
+    });
+  }
+
+  // ---------- MARKET / AUCTIONS ----------
+
+  function renderMarketList() {
+    const items = loadArray(DB_KEYS.ITEMS).sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+    if (!items.length) {
+      marketListCivilian.innerHTML =
+        `<p class="caption">No items listed yet. Be the first to auction something!</p>`;
+      return;
+    }
+    marketListCivilian.innerHTML = "";
+    items.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "market-card" + (item.status === "sold" ? " status-sold" : "");
+      div.innerHTML = `
+        <div class="market-top-row">
+          <div>
+            <div class="market-title">${item.title}</div>
+            <div class="market-owner">Owner: ${item.owner}</div>
+          </div>
+          <div class="pill green">💎 ${item.price} pts</div>
+        </div>
+        <div>${item.desc}</div>
+        <div class="market-tags">
+          <span class="pill">${item.status === "sold" ? "Sold" : "For sale"}</span>
+        </div>
+      `;
+
+      if (item.status !== "sold" && currentSession.role === "civilian") {
+        const buyBtn = document.createElement("button");
+        buyBtn.style.marginTop = "4px";
+        buyBtn.textContent = "Buy with points";
+        buyBtn.addEventListener("click", () => buyItem(item));
+        div.appendChild(buyBtn);
+      }
+
+      marketListCivilian.appendChild(div);
+    });
+  }
+
+  function buyItem(item) {
+    civMarketMsg.style.display = "none";
+    if (!currentSession.username) return;
+
+    const user = findUser(currentSession.username);
+    if (!user) return;
+    if (user.banned) {
+      civMarketMsgText.textContent = "Your account is banned. You cannot buy items.";
+      civMarketMsg.style.display = "flex";
+      return;
+    }
+
+    if (item.status === "sold") {
+      civMarketMsgText.textContent = "This item is already sold.";
+      civMarketMsg.style.display = "flex";
+      return;
+    }
+
+    const price = Number(item.price) || 0;
+    if (user.points < price) {
+      civMarketMsgText.textContent = "Not enough points for this purchase.";
+      civMarketMsg.style.display = "flex";
+      return;
+    }
+
+    // Deduct from buyer
+    user.points -= price;
+    updateUser(user);
+
+    // Reward seller (if civilian)
+    if (item.owner) {
+      const seller = findUser(item.owner);
+      if (seller && !seller.banned) {
+        seller.points = (seller.points ?? 100) + price;
+        updateUser(seller);
+      }
+    }
+
+    // Mark item as sold
+    const items = loadArray(DB_KEYS.ITEMS);
+    const idx = items.findIndex(i => i.id === item.id);
+    if (idx >= 0) {
+      items[idx].status = "sold";
+      saveArray(DB_KEYS.ITEMS, items);
+    }
+
+    loadCivPoints();
+    renderUsersTable();
+    renderMarketList();
+  }
+
+  btnCreateItem.addEventListener("click", () => {
+    civMarketMsg.style.display = "none";
+
+    if (currentSession.role !== "civilian" || !currentSession.username) {
+      civMarketMsgText.textContent = "You must be logged in as a civilian to create an auction.";
+      civMarketMsg.style.display = "flex";
+      return;
+    }
+
+    const title = itemTitleInput.value.trim();
+    const desc = itemDescInput.value.trim();
+    const price = Number(itemPriceInput.value.trim());
+
+    if (!title || !desc || !price || price <= 0) {
+      civMarketMsgText.textContent = "Please fill all fields and use a valid price.";
+      civMarketMsg.style.display = "flex";
+      return;
+    }
+
+    const items = loadArray(DB_KEYS.ITEMS);
+    items.push({
+      id: Date.now(),
+      title,
+      desc,
+      price,
+      owner: currentSession.username,
+      status: "for sale",
+      createdAt: new Date().toISOString()
+    });
+    saveArray(DB_KEYS.ITEMS, items);
+
+    itemTitleInput.value = "";
+    itemDescInput.value = "";
+    itemPriceInput.value = "";
+
+    renderMarketList();
+  });
+
+  // ---------- INIT ----------
+
+  (function init() {
+    setDashboard(null, null);
+    renderNotices();
+  })();
+
+</script>
+</body>
+</html>
